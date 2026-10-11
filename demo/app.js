@@ -5,6 +5,7 @@ const viewer = document.querySelector('#shoe-viewer');
 const loading = document.querySelector('#canvas-loading');
 let renderer, scene, camera, controls, shoeRoot, accentMaterial;
 let isInteracting = false;
+let currentAccentColor = '#c8ff00';
 let frame = 0;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -40,7 +41,7 @@ function createSneaker() {
   const upperShade = material('#d4d1c8',.65);
   const soleMat = material('#f9f8f2',.48);
   const rubber = material('#b9bcad',.83);
-  accentMaterial = material('#c8ff00',.36,.05);
+  accentMaterial = material(currentAccentColor,.36,.05);
   const accent = accentMaterial;
   const dark = material('#22241e',.5);
   const glassy = material('#ffffff',.35);
@@ -199,7 +200,7 @@ function renderCart(){
   const subtotal=cart.reduce((sum,item)=>sum+item.price*item.qty,0);
   countEl.textContent=totalQty;drawerCount.textContent='('+totalQty+')';subtotalEl.textContent=money(subtotal);
   if(!cart.length){itemsEl.innerHTML='<p class="empty-cart">Your next favourite pair is waiting.</p>';return;}
-  itemsEl.innerHTML=cart.map((item,index)=>'<div class="cart-item"><strong>'+item.name+'</strong><span>'+money(item.price)+' × '+item.qty+'</span><button type="button" data-remove="'+index+'">REMOVE ITEM ×</button></div>').join('');
+  itemsEl.innerHTML=cart.map((item,index)=>'<div class="cart-item"><strong>'+item.name+'</strong><span>'+money(item.price)+' × '+item.qty+'</span><small>EU size: '+item.size+'</small><button type="button" data-remove="'+index+'">REMOVE ITEM ×</button></div>').join('');
 }
 function openCart(){body.classList.add('cart-open');drawer.setAttribute('aria-hidden','false');document.querySelector('#cart-close').focus();}
 function closeCart(){body.classList.remove('cart-open');drawer.setAttribute('aria-hidden','true');document.querySelector('#cart-open').focus();}
@@ -209,8 +210,10 @@ document.querySelector('#drawer-backdrop')?.addEventListener('click',closeCart);
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&body.classList.contains('cart-open'))closeCart();});
 document.querySelectorAll('.add-button').forEach(button=>button.addEventListener('click',()=>{
   const name=button.dataset.product;const price=Number(button.dataset.price);
-  const existing=cart.find(item=>item.name===name);
-  if(existing)existing.qty++;else cart.push({name,price,qty:1});
+  if(button.id==='quick-view-add'&&!button.dataset.size){showToast('Choose a size before adding to your bag');return;}
+  const size=button.dataset.size||'Not selected';
+  const existing=cart.find(item=>item.name===name&&item.size===size);
+  if(existing)existing.qty++;else cart.push({name,price,qty:1,size});
   renderCart();showToast(name+' added to your bag');button.innerHTML='ADDED ✓';setTimeout(()=>button.innerHTML='ADD TO BAG <span>+</span>',1200);
 }));
 itemsEl.addEventListener('click',event=>{
@@ -220,12 +223,28 @@ itemsEl.addEventListener('click',event=>{
 function applyProductFilters(){
   const active=document.querySelector('.filter.active')?.dataset.filter||'all';
   const query=(document.querySelector('#product-search')?.value||'').trim().toLowerCase();
-  document.querySelectorAll('.product-card').forEach(card=>{
+  const cards=[...document.querySelectorAll('.product-card')];
+  cards.forEach(card=>{
     const categoryMatch=active==='all'||card.dataset.category===active;
     const searchMatch=!query||(card.dataset.name||'').toLowerCase().includes(query)||card.textContent.toLowerCase().includes(query);
     card.hidden=!(categoryMatch&&searchMatch);
   });
+  const sort=document.querySelector('#product-sort')?.value||'featured';
+  const grid=document.querySelector('#product-grid');
+  const visible=cards.filter(card=>!card.hidden);
+  visible.sort((a,b)=>{
+    const priceA=Number(a.dataset.price||a.querySelector('[data-price]')?.dataset.price||0);
+    const priceB=Number(b.dataset.price||b.querySelector('[data-price]')?.dataset.price||0);
+    if(sort==='price-low')return priceA-priceB;
+    if(sort==='price-high')return priceB-priceA;
+    if(sort==='name')return (a.dataset.name||'').localeCompare(b.dataset.name||'');
+    return cards.indexOf(a)-cards.indexOf(b);
+  });
+  visible.forEach(card=>grid.appendChild(card));
+  const counter=document.querySelector('#results-count');
+  if(counter)counter.textContent=visible.length+' '+(visible.length===1?'style':'styles');
 }
+document.querySelector('#product-sort')?.addEventListener('change',applyProductFilters);
 document.querySelectorAll('.filter').forEach(button=>button.addEventListener('click',()=>{
   document.querySelectorAll('.filter').forEach(item=>item.classList.toggle('active',item===button));
   applyProductFilters();
@@ -234,13 +253,54 @@ document.querySelector('#product-search')?.addEventListener('input',applyProduct
 document.querySelectorAll('.wish-button').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();button.classList.toggle('saved');button.textContent=button.classList.contains('saved')?'♥':'♡';showToast(button.classList.contains('saved')?'Saved to your favourites':'Removed from favourites');}));
 document.querySelectorAll('.hero-color').forEach(button=>button.addEventListener('click',()=>{
   document.querySelectorAll('.hero-color').forEach(item=>item.classList.toggle('selected',item===button));
-  if(accentMaterial) accentMaterial.color.set(button.dataset.shoeColor);
+  currentAccentColor=button.dataset.shoeColor;
+  if(accentMaterial) accentMaterial.color.set(currentAccentColor);
   showToast('3D accent colour updated');
 }));
 document.querySelectorAll('.swatches').forEach(group=>group.querySelectorAll('.swatch').forEach(swatch=>swatch.addEventListener('click',()=>{
   group.querySelectorAll('.swatch').forEach(s=>s.classList.toggle('selected',s===swatch));
-  showToast('Colour selected: '+swatch.title+' · Demo preview only');
+  const img=group.closest('.product-card')?.querySelector('.product-visual img');
+  const filters={red:'none',white:'grayscale(1) brightness(1.16)',black:'grayscale(1) brightness(.55)',blue:'hue-rotate(145deg) saturate(.85)',lime:'hue-rotate(45deg) saturate(1.2)',coral:'hue-rotate(325deg) saturate(1.15)',olive:'hue-rotate(35deg) saturate(.7)',cream:'sepia(.18) saturate(.75)'};
+  if(img)img.style.filter=filters[swatch.title.toLowerCase()]||'none';
+  showToast('Colour preview: '+swatch.title+' · Demo only');
 })));
+const quickModal=document.querySelector('#quick-view-modal');
+const quickBackdrop=document.querySelector('#quick-view-backdrop');
+const quickAdd=document.querySelector('#quick-view-add');
+const quickTitle=document.querySelector('#quick-view-title');
+const quickDescription=document.querySelector('#quick-view-description');
+const quickPrice=document.querySelector('#quick-view-price');
+const sizeNote=document.querySelector('#quick-view-size-note');
+let selectedSize='';
+function closeQuickView(){document.body.classList.remove('quick-view-open');quickModal.setAttribute('aria-hidden','true');}
+function openQuickView(card){
+  const name=card.dataset.name||'STRIDES Sneaker';
+  const price=Number(card.dataset.price||card.querySelector('[data-price]')?.dataset.price||0);
+  quickTitle.textContent=name;
+  quickDescription.textContent=card.querySelector('.product-meta p')?.textContent||'Built for everyday movement and comfort.';
+  quickPrice.textContent=money(price);
+  quickAdd.dataset.product=name;quickAdd.dataset.price=String(price);quickAdd.dataset.size='';
+  quickAdd.innerHTML='SELECT SIZE TO ADD <span>+</span>';
+  selectedSize='';
+  document.querySelectorAll('#quick-view-sizes [data-size]').forEach(btn=>btn.classList.remove('selected'));
+  sizeNote.textContent='Choose your size to continue.';
+  document.body.classList.add('quick-view-open');quickModal.setAttribute('aria-hidden','false');
+  document.querySelector('#quick-view-close').focus();
+}
+document.querySelectorAll('.quick-view-button').forEach(button=>button.addEventListener('click',()=>openQuickView(button.closest('.product-card'))));
+document.querySelector('#quick-view-close')?.addEventListener('click',closeQuickView);
+quickBackdrop?.addEventListener('click',closeQuickView);
+document.querySelectorAll('#quick-view-sizes [data-size]').forEach(button=>button.addEventListener('click',()=>{
+  selectedSize=button.dataset.size;
+  document.querySelectorAll('#quick-view-sizes [data-size]').forEach(item=>item.classList.toggle('selected',item===button));
+  quickAdd.dataset.size=selectedSize;quickAdd.innerHTML='ADD SIZE '+selectedSize+' TO BAG <span>+</span>';
+  sizeNote.textContent='EU '+selectedSize+' selected · demo availability';
+}));
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&document.body.classList.contains('quick-view-open'))closeQuickView();});
+document.querySelectorAll('.product-visual img, .campaign-visual img').forEach(img=>img.addEventListener('error',()=>{
+  img.closest('.product-visual')?.classList.add('image-failed');
+  img.alt='STRIDES product image unavailable; try another connection.';
+}));
 document.querySelector('#demo-checkout').addEventListener('click',()=>showToast('Demo only — connect Shopify checkout before accepting orders.'));
 document.querySelector('#newsletter-form').addEventListener('submit',event=>{
   event.preventDefault();document.querySelector('#newsletter-message').textContent='Thanks for your interest! Connect an email platform to collect subscriptions.';event.target.reset();
