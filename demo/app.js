@@ -3,7 +3,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const viewer = document.querySelector('#shoe-viewer');
 const loading = document.querySelector('#canvas-loading');
-let renderer, scene, camera, controls, shoeRoot, accentMaterial;\nlet isInteracting = false;
+let renderer, scene, camera, controls, shoeRoot, accentMaterial;
+let isInteracting = false;
 let frame = 0;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -39,7 +40,8 @@ function createSneaker() {
   const upperShade = material('#d4d1c8',.65);
   const soleMat = material('#f9f8f2',.48);
   const rubber = material('#b9bcad',.83);
-  accentMaterial = material('#c8ff00',.36,.05);\n  const accent = accentMaterial;
+  accentMaterial = material('#c8ff00',.36,.05);
+  const accent = accentMaterial;
   const dark = material('#22241e',.5);
   const glassy = material('#ffffff',.35);
   // Length axis is X: toe points left, heel right.
