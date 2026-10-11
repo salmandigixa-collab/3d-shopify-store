@@ -37,71 +37,208 @@ function makeSole(parent, x, y, z, length, height, width, color, bevel = 0.08) {
 function createSneaker() {
   shoeRoot = new THREE.Group();
   scene.add(shoeRoot);
-  const upper = material('#eeeae0',.56);
-  const upperShade = material('#d4d1c8',.65);
-  const soleMat = material('#f9f8f2',.48);
-  const rubber = material('#b9bcad',.83);
-  accentMaterial = material(currentAccentColor,.36,.05);
+
+  const upper = material('#e8e6df', .72);
+  const upperLight = material('#faf9f4', .62);
+  const upperShade = material('#c9c9c0', .78);
+  const soleMat = material('#f8f7f1', .58);
+  const outsoleMat = material('#b8bbb0', .88);
+  const dark = material('#242820', .48);
+  const eyeletMat = material('#6b7064', .36, .25);
+  accentMaterial = material(currentAccentColor, .42, .02);
   const accent = accentMaterial;
-  const dark = material('#22241e',.5);
-  const glassy = material('#ffffff',.35);
-  // Length axis is X: toe points left, heel right.
-  makeSole(shoeRoot,0,-.67,0,3.5,.31,.95,'#e8e8df',.07);
-  makeSole(shoeRoot,0,-.78,0,3.35,.12,.9,'#aeb1a4',.035);
-  // Layered, sculpted upper silhouette.
-  const bodyShape = new THREE.Shape();
-  bodyShape.moveTo(-1.66,-.38);
-  bodyShape.quadraticCurveTo(-1.79,-.1,-1.51,.12);
-  bodyShape.lineTo(-.9,.3);
-  bodyShape.quadraticCurveTo(-.62,.44,-.33,.48);
-  bodyShape.lineTo(.55,.45);
-  bodyShape.quadraticCurveTo(.9,.4,1.05,.17);
-  bodyShape.lineTo(1.42,-.1);
-  bodyShape.quadraticCurveTo(1.54,-.23,1.48,-.4);
-  bodyShape.lineTo(-1.66,-.38);
-  const upperGeo = new THREE.ExtrudeGeometry(bodyShape,{depth:.76,bevelEnabled:true,bevelSegments:5,steps:1,bevelSize:.1,bevelThickness:.1,curveSegments:20});
-  upperGeo.translate(0,0,-.38);
-  addMesh(shoeRoot,upperGeo,upper,[0,-.27,0]);
-  // Heel collar and tongue.
-  addMesh(shoeRoot,new THREE.BoxGeometry(.64,.15,.61),upperShade,[.73,.08,0],[0,0,-.24]);
-  addMesh(shoeRoot,new THREE.BoxGeometry(.49,.15,.48),upper,[.04,.2,0],[0,0,-.43]);
-  addMesh(shoeRoot,new THREE.BoxGeometry(.42,.1,.43),dark,[.16,.285,0],[0,0,-.43]);
-  // Side overlays make the silhouette read as a technical runner.
-  const panelShape = new THREE.Shape();
-  panelShape.moveTo(-.95,-.18); panelShape.quadraticCurveTo(-.52,.17,-.12,.18);
-  panelShape.lineTo(.34,.06); panelShape.quadraticCurveTo(.06,-.1,-.18,-.17);
-  panelShape.lineTo(-.95,-.18);
-  const panelGeo = new THREE.ExtrudeGeometry(panelShape,{depth:.025,bevelEnabled:true,bevelSize:.015,bevelThickness:.01,bevelSegments:2});
-  addMesh(shoeRoot,panelGeo,glassy,[-.03,-.27,.397],[0,0,0]);
-  const sideStripe = new THREE.Shape();
-  sideStripe.moveTo(-.7,-.03); sideStripe.lineTo(-.13,.11); sideStripe.lineTo(.25,.04); sideStripe.lineTo(-.15,-.01); sideStripe.lineTo(-.7,-.03);
-  addMesh(shoeRoot,new THREE.ExtrudeGeometry(sideStripe,{depth:.035,bevelEnabled:true,bevelSize:.01,bevelThickness:.01,bevelSegments:2}),accent,[0,-.28,.435]);
-  // A matching panel on the far side.
-  addMesh(shoeRoot,panelGeo,upperShade,[-.03,-.27,-.42],[0,0,0]);
-  addMesh(shoeRoot,new THREE.ExtrudeGeometry(sideStripe,{depth:.03,bevelEnabled:true,bevelSize:.01,bevelThickness:.01,bevelSegments:2}),accent,[0,-.28,-.46]);
-  // Lace bed and eyelets.
-  for(let i=0;i<5;i++){
-    const lx=-.32+i*.13;
-    const lace=addMesh(shoeRoot,new THREE.BoxGeometry(.36,.035,.055),glassy,[lx,.24,0],[0,0,.16]);
-    lace.rotation.y=(i%2===0?.18:-.18);
-    for(const side of [-1,1]){
-      addMesh(shoeRoot,new THREE.SphereGeometry(.035,12,8),dark,[lx-.12,.21,side*.235]);
+
+  // A real sneaker silhouette: toe at left, heel at right, sole below.
+  // Build the upper as a smooth loft through cross-sections rather than a flat extruded shape.
+  const sections = [
+    [-1.72, -.39, -.15, .31],
+    [-1.57, -.43, .01, .39],
+    [-1.34, -.43, .16, .43],
+    [-1.02, -.43, .26, .45],
+    [-.68, -.43, .34, .43],
+    [-.32, -.43, .39, .39],
+    [.05, -.43, .38, .37],
+    [.38, -.43, .34, .39],
+    [.68, -.43, .29, .42],
+    [.94, -.43, .18, .43],
+    [1.18, -.43, .04, .40],
+    [1.36, -.41, -.04, .33],
+    [1.43, -.39, -.10, .23]
+  ];
+  const ringCount = 24;
+  const vertices = [];
+  const indices = [];
+  const uvs = [];
+  sections.forEach((section, i) => {
+    const [x, bottom, top, halfWidth] = section;
+    const centerY = (bottom + top) / 2;
+    const halfHeight = Math.max(.035, (top - bottom) / 2);
+    for (let j = 0; j <= ringCount; j++) {
+      const angle = (j / ringCount) * Math.PI * 2;
+      // Flatten the bottom slightly like a shoe last, with a rounded toe and heel.
+      const cs = Math.cos(angle);
+      const sn = Math.sin(angle);
+      const y = centerY + halfHeight * cs;
+      const z = halfWidth * sn;
+      vertices.push(x, y, z);
+      uvs.push(i / (sections.length - 1), j / ringCount);
+    }
+  });
+  for (let i = 0; i < sections.length - 1; i++) {
+    for (let j = 0; j < ringCount; j++) {
+      const a = i * (ringCount + 1) + j;
+      const b = a + ringCount + 1;
+      indices.push(a, b, a + 1, b, b + 1, a + 1);
     }
   }
-  for(let i=0;i<4;i++){
-    addMesh(shoeRoot,new THREE.BoxGeometry(.27,.027,.06),glassy,[-.35+i*.14,.31,0],[0,0,.12]);
+  const upperGeo = new THREE.BufferGeometry();
+  upperGeo.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+  upperGeo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+  upperGeo.setIndex(indices);
+  upperGeo.computeVertexNormals();
+  const upperMesh = new THREE.Mesh(upperGeo, upper);
+  upperMesh.castShadow = true;
+  upperMesh.receiveShadow = true;
+  shoeRoot.add(upperMesh);
+
+  // Layered rubber midsole and outsole follow the curved side profile.
+  const soleShape = new THREE.Shape();
+  soleShape.moveTo(-1.76, -.43);
+  soleShape.quadraticCurveTo(-1.82, -.49, -1.70, -.55);
+  soleShape.lineTo(-1.45, -.61);
+  soleShape.quadraticCurveTo(-.85, -.66, -.12, -.64);
+  soleShape.lineTo(.73, -.62);
+  soleShape.quadraticCurveTo(1.16, -.60, 1.40, -.51);
+  soleShape.quadraticCurveTo(1.52, -.47, 1.48, -.40);
+  soleShape.lineTo(1.28, -.38);
+  soleShape.quadraticCurveTo(.55, -.45, -.24, -.45);
+  soleShape.lineTo(-1.42, -.43);
+  soleShape.closePath();
+  const soleGeo = new THREE.ExtrudeGeometry(soleShape, {
+    depth: .88, bevelEnabled: true, bevelSegments: 4,
+    steps: 1, bevelSize: .035, bevelThickness: .035, curveSegments: 18
+  });
+  soleGeo.translate(0, 0, -.44);
+  const midsole = new THREE.Mesh(soleGeo, soleMat);
+  midsole.castShadow = true;
+  midsole.receiveShadow = true;
+  shoeRoot.add(midsole);
+
+  const outsoleShape = new THREE.Shape();
+  outsoleShape.moveTo(-1.69, -.56);
+  outsoleShape.quadraticCurveTo(-1.5, -.62, -.9, -.65);
+  outsoleShape.lineTo(.55, -.65);
+  outsoleShape.quadraticCurveTo(1.22, -.63, 1.43, -.53);
+  outsoleShape.lineTo(1.40, -.59);
+  outsoleShape.quadraticCurveTo(.55, -.71, -.65, -.69);
+  outsoleShape.quadraticCurveTo(-1.38, -.67, -1.69, -.61);
+  outsoleShape.closePath();
+  const outsoleGeo = new THREE.ExtrudeGeometry(outsoleShape, {
+    depth: .90, bevelEnabled: true, bevelSegments: 2,
+    steps: 1, bevelSize: .018, bevelThickness: .018, curveSegments: 14
+  });
+  outsoleGeo.translate(0, 0, -.45);
+  const outsole = new THREE.Mesh(outsoleGeo, outsoleMat);
+  outsole.castShadow = true;
+  shoeRoot.add(outsole);
+
+  // Toe bumper and subtle toe-cap stitching.
+  const toeCap = new THREE.Mesh(
+    new THREE.SphereGeometry(1, 28, 18),
+    upperLight
+  );
+  toeCap.scale.set(.40, .105, .345);
+  toeCap.position.set(-1.30, -.205, 0);
+  toeCap.castShadow = true;
+  shoeRoot.add(toeCap);
+
+  // Padded heel collar with a dark opening, shaped like a real shoe opening.
+  const collar = new THREE.Mesh(
+    new THREE.TorusGeometry(.235, .052, 10, 36),
+    upperShade
+  );
+  collar.rotation.x = Math.PI / 2;
+  collar.scale.set(1.22, .82, 1);
+  collar.position.set(.78, .205, 0);
+  collar.castShadow = true;
+  shoeRoot.add(collar);
+  const opening = new THREE.Mesh(
+    new THREE.CylinderGeometry(.19, .22, .035, 32, 1, false),
+    dark
+  );
+  opening.scale.set(1.25, 1, .84);
+  opening.position.set(.78, .20, 0);
+  opening.castShadow = true;
+  shoeRoot.add(opening);
+
+  // Tongue and a row of crossing laces on top of the instep.
+  const tongue = addMesh(
+    shoeRoot, new THREE.BoxGeometry(.68, .075, .36), upperShade,
+    [.10, .355, 0], [0, 0, -.12]
+  );
+  tongue.castShadow = true;
+  const tongueTop = addMesh(
+    shoeRoot, new THREE.BoxGeometry(.48, .035, .27), upperLight,
+    [.12, .397, 0], [0, 0, -.12]
+  );
+  tongueTop.castShadow = true;
+  for (let i = 0; i < 5; i++) {
+    const x = -.32 + i * .145;
+    const y = .335 - i * .014;
+    // Lace eyelets on both sides of the throat.
+    for (const side of [-1, 1]) {
+      const eyelet = new THREE.Mesh(new THREE.TorusGeometry(.032, .009, 6, 12), eyeletMat);
+      eyelet.position.set(x, y + .025, side * (.17 - i * .004));
+      eyelet.rotation.x = Math.PI / 2;
+      eyelet.castShadow = true;
+      shoeRoot.add(eyelet);
+    }
+    const lace = addMesh(
+      shoeRoot, new THREE.BoxGeometry(.235, .024, .035), upperLight,
+      [x + .045, y + .058, 0], [0, 0, i % 2 ? .16 : -.16]
+    );
+    lace.castShadow = true;
   }
-  // Heel counter, toe bumper, outsole tread bars.
-  addMesh(shoeRoot,new THREE.BoxGeometry(.27,.3,.8),upperShade,[1.2,-.28,0],[0,0,-.18]);
-  addMesh(shoeRoot,new THREE.BoxGeometry(.16,.17,.83),rubber,[-1.43,-.45,0],[0,0,-.12]);
-  for(let i=0;i<9;i++){
-    const x=-1.35+i*.32;
-    addMesh(shoeRoot,new THREE.BoxGeometry(.12,.025,.7),rubber,[x,-.82,0],[0,0,0]);
+
+  // Side overlays and a recognisable curved STRIDES performance stripe.
+  for (const side of [-1, 1]) {
+    const z = side * .392;
+    const overlayCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-1.05, -.17, z * .92),
+      new THREE.Vector3(-.76, .015, z),
+      new THREE.Vector3(-.30, .075, z * 1.02),
+      new THREE.Vector3(.18, -.015, z * 1.04),
+      new THREE.Vector3(.50, -.16, z * .95)
+    ]);
+    const overlay = new THREE.Mesh(
+      new THREE.TubeGeometry(overlayCurve, 36, .032, 8, false), upperLight
+    );
+    overlay.castShadow = true;
+    shoeRoot.add(overlay);
+
+    const stripeCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-.91, -.12, z * 1.04),
+      new THREE.Vector3(-.55, -.005, z * 1.10),
+      new THREE.Vector3(-.18, -.04, z * 1.11),
+      new THREE.Vector3(.16, -.14, z * 1.06)
+    ]);
+    const stripe = new THREE.Mesh(
+      new THREE.TubeGeometry(stripeCurve, 28, .025, 8, false), accent
+    );
+    stripe.castShadow = true;
+    shoeRoot.add(stripe);
   }
-  // Tiny heel mark.
-  addMesh(shoeRoot,new THREE.BoxGeometry(.035,.19,.025),accent,[1.31,-.17,.418],[0,0,-.1]);
-  shoeRoot.rotation.set(.1, -.4, -.1);
-  shoeRoot.scale.setScalar(1);
+
+  // Heel pull tab, tiny branding plate and textured outsole grooves.
+  addMesh(shoeRoot, new THREE.BoxGeometry(.10, .25, .075), accent, [1.18, .17, 0], [0, 0, -.12]);
+  addMesh(shoeRoot, new THREE.BoxGeometry(.22, .045, .16), dark, [.77, .455, 0], [0, 0, -.12]);
+  for (let i = 0; i < 9; i++) {
+    const x = -1.42 + i * .31;
+    addMesh(shoeRoot, new THREE.BoxGeometry(.105, .018, .72), dark, [x, -.672, 0]);
+  }
+
+  shoeRoot.rotation.set(.03, -.36, -.035);
+  shoeRoot.scale.setScalar(1.04);
 }
 function initViewer() {
   try {
