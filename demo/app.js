@@ -143,9 +143,16 @@ function initViewer() {
     const animate = () => {
       frame=requestAnimationFrame(animate);
       controls.update();
-      if(!reducedMotion && shoeRoot && !controls.state) shoeRoot.position.y=Math.sin(performance.now()*.0009)*.055;
+      if(!reducedMotion && shoeRoot){
+        const t=performance.now()*.001;
+        shoeRoot.position.y=Math.sin(t*1.25)*.075;
+        if(!isInteracting) shoeRoot.rotation.y += .0018;
+        shoeRoot.rotation.z = -.1 + Math.sin(t*.55)*.025;
+      }
       renderer.render(scene,camera);
     };
+    renderer.domElement.addEventListener('pointerdown',()=>{isInteracting=true;});
+    window.addEventListener('pointerup',()=>{isInteracting=false;});
     animate();
   } catch(error) {
     console.error('3D viewer could not start:',error);
@@ -202,16 +209,31 @@ document.querySelectorAll('.add-button').forEach(button=>button.addEventListener
   const name=button.dataset.product;const price=Number(button.dataset.price);
   const existing=cart.find(item=>item.name===name);
   if(existing)existing.qty++;else cart.push({name,price,qty:1});
-  renderCart();showToast(name+' added to your bag');button.innerHTML='ADDED ✓';setTimeout(()=>button.innerHTML='QUICK ADD <span>+</span>',1200);
+  renderCart();showToast(name+' added to your bag');button.innerHTML='ADDED ✓';setTimeout(()=>button.innerHTML='ADD TO BAG <span>+</span>',1200);
 }));
 itemsEl.addEventListener('click',event=>{
   const button=event.target.closest('[data-remove]');if(!button)return;
   cart.splice(Number(button.dataset.remove),1);renderCart();
 });
+function applyProductFilters(){
+  const active=document.querySelector('.filter.active')?.dataset.filter||'all';
+  const query=(document.querySelector('#product-search')?.value||'').trim().toLowerCase();
+  document.querySelectorAll('.product-card').forEach(card=>{
+    const categoryMatch=active==='all'||card.dataset.category===active;
+    const searchMatch=!query||(card.dataset.name||'').toLowerCase().includes(query)||card.textContent.toLowerCase().includes(query);
+    card.hidden=!(categoryMatch&&searchMatch);
+  });
+}
 document.querySelectorAll('.filter').forEach(button=>button.addEventListener('click',()=>{
   document.querySelectorAll('.filter').forEach(item=>item.classList.toggle('active',item===button));
-  const filter=button.dataset.filter;
-  document.querySelectorAll('.product-card').forEach(card=>{card.hidden=filter!=='all'&&card.dataset.category!==filter;});
+  applyProductFilters();
+}));
+document.querySelector('#product-search')?.addEventListener('input',applyProductFilters);
+document.querySelectorAll('.wish-button').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();button.classList.toggle('saved');button.textContent=button.classList.contains('saved')?'♥':'♡';showToast(button.classList.contains('saved')?'Saved to your favourites':'Removed from favourites');}));
+document.querySelectorAll('.hero-color').forEach(button=>button.addEventListener('click',()=>{
+  document.querySelectorAll('.hero-color').forEach(item=>item.classList.toggle('selected',item===button));
+  if(accentMaterial) accentMaterial.color.set(button.dataset.shoeColor);
+  showToast('3D accent colour updated');
 }));
 document.querySelectorAll('.swatches').forEach(group=>group.querySelectorAll('.swatch').forEach(swatch=>swatch.addEventListener('click',()=>{
   group.querySelectorAll('.swatch').forEach(s=>s.classList.toggle('selected',s===swatch));
