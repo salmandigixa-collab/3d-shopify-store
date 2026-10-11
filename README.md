@@ -1,6 +1,6 @@
 # STRIDES Shoes Pakistan — 3D Storefront
 
-A sneaker-store concept with an interactive Three.js hero model, enhanced motion design, eight sample products, search and category filters, favourites, and a demo cart with prices in PKR.
+A sneaker-store concept with an interactive Three.js hero model, enhanced motion design, twelve sample products, search, category filters, price/name sorting, quick-view with EU size selection, colour previews, branded product cards, favourites, and a demo cart with prices in PKR.
 
 ## Preview the redesigned demo
 
