@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-sneaker-store",
+      "settings": {
+        "eyebrow": "THE NEXT STEP",
+        "headline": "ENGINEERED FOR MOVEMENT",
+        "description": "Light on your feet. Loud in every direction. Meet the next generation of everyday performance.",
+        "button_label": "Shop the collection",
+        "button_link": "/collections/all",
+        "secondary_label": "Explore the details",
+        "secondary_link": "#technology",
+        "collection": "frontpage"
+      }
+    }
+  },
+  "order": ["main"]
+}
