@@ -37,7 +37,7 @@
       {% assign featured_collection = section.settings.collection %}
       {% if featured_collection == blank or collections[featured_collection] == blank %}{% assign featured_collection = collections.all %}{% else %}{% assign featured_collection = collections[featured_collection] %}{% endif %}
       <div class="product-grid">
-        {% for product in featured_collection.products limit: 4 %}
+        {% for product in featured_collection.products limit: 8 %}
           <article class="product-card reveal">
             <a class="product-image-wrap" href="{{ product.url }}">
               {% if product.featured_image %}<img src="{{ product.featured_image | image_url: width: 900 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="900" height="900">{% else %}<div class="product-placeholder">STRIDE</div>{% endif %}
