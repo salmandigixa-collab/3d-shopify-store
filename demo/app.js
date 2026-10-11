@@ -106,9 +106,9 @@ function initViewer() {
   try {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(34, viewer.clientWidth / viewer.clientHeight, .1, 100);
-    camera.position.set(0,2.2,7.8);
+    camera.position.set(0,1.45,8.8);
     renderer = new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1,2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1,1.75));
     renderer.setSize(viewer.clientWidth,viewer.clientHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -122,8 +122,8 @@ function initViewer() {
     controls.enablePan = false;
     controls.minDistance = 5;
     controls.maxDistance = 10;
-    controls.minPolarAngle = Math.PI*.22;
-    controls.maxPolarAngle = Math.PI*.72;
+    controls.minPolarAngle = Math.PI*.28;
+    controls.maxPolarAngle = Math.PI*.49;
     controls.target.set(0,-.16,0);
     scene.add(new THREE.HemisphereLight('#fffdf4','#7e8273',2.1));
     const key = new THREE.DirectionalLight('#ffffff',3.2);
@@ -141,15 +141,15 @@ function initViewer() {
     };
     new ResizeObserver(resize).observe(viewer);
     const reset = document.querySelector('#reset-view');
-    reset?.addEventListener('click',()=>{controls.reset();shoeRoot.rotation.set(.1,-.4,-.1);});
+    reset?.addEventListener('click',()=>{controls.reset();shoeRoot.rotation.set(.04,-.28,-.03);});
     const animate = () => {
       frame=requestAnimationFrame(animate);
       controls.update();
       if(!reducedMotion && shoeRoot){
         const t=performance.now()*.001;
         shoeRoot.position.y=Math.sin(t*1.25)*.075;
-        if(!isInteracting) shoeRoot.rotation.y += .0018;
-        shoeRoot.rotation.z = -.1 + Math.sin(t*.55)*.025;
+        if(!isInteracting) shoeRoot.rotation.y = -.28 + Math.sin(t*.28)*.12;
+        shoeRoot.rotation.z = -.03 + Math.sin(t*.55)*.012;
       }
       renderer.render(scene,camera);
     };
