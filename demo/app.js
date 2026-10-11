@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const viewer = document.querySelector('#shoe-viewer');
 const loading = document.querySelector('#canvas-loading');
-let renderer, scene, camera, controls, shoeRoot;
+let renderer, scene, camera, controls, shoeRoot, accentMaterial;\nlet isInteracting = false;
 let frame = 0;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -39,7 +39,7 @@ function createSneaker() {
   const upperShade = material('#d4d1c8',.65);
   const soleMat = material('#f9f8f2',.48);
   const rubber = material('#b9bcad',.83);
-  const accent = material('#c9f23a',.4);
+  accentMaterial = material('#c8ff00',.36,.05);\n  const accent = accentMaterial;
   const dark = material('#22241e',.5);
   const glassy = material('#ffffff',.35);
   // Length axis is X: toe points left, heel right.
@@ -180,7 +180,7 @@ const itemsEl=document.querySelector('#cart-items');
 const subtotalEl=document.querySelector('#cart-subtotal');
 const toast=document.querySelector('#toast');
 let toastTimer;
-function money(value){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(value);}
+function money(value){return 'PKR '+new Intl.NumberFormat('en-PK',{maximumFractionDigits:0}).format(value);}
 function showToast(message){
   toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);
   toastTimer=setTimeout(()=>toast.classList.remove('show'),2400);
