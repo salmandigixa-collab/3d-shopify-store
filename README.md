@@ -1,44 +1,23 @@
-# STRIDES Shoes — 3D storefront project
+# STRIDES Shoes Pakistan — 3D Storefront
 
-This repository contains two implementation paths:
+A sneaker-store concept with an interactive Three.js hero model, enhanced motion design, eight sample products, search and category filters, favourites, and a demo cart with prices in PKR.
 
-- **`demo/`** — a standalone storefront prototype with an interactive Three.js sneaker, product filters, colour swatches, a demo cart drawer, responsive layouts, and motion effects.
-- **`shopify-theme/`** — Shopify Online Store 2.0 Liquid section/theme starter with a responsive homepage, collection-driven product cards, add-to-cart forms, and newsletter form.
+## Preview the redesigned demo
 
-## Start with the standalone demo
+1. Download this repository as a ZIP and extract it.
+2. Open the `demo` folder in File Explorer.
+3. Click the address bar, type `cmd`, and press Enter.
+4. Run `python -m http.server 8000`.
+5. Visit http://localhost:8000. Leave Command Prompt open.
 
-Use a local HTTP server because the Three.js code uses JavaScript modules.
+An internet connection is required for CDN modules, fonts, and remote product photos.
 
-```bash
-cd demo
-python -m http.server 8000
-```
+## Project paths
 
-Open http://localhost:8000. You need an internet connection for CDN-hosted Three.js, fonts, and placeholder images.
+- `demo/` — standalone interactive storefront, suitable for local preview.
+- `shopify-theme/` — Shopify Online Store 2.0 theme starter.
+- `app/`, `components/`, `lib/` — Next.js application source.
 
-See [demo/README.md](demo/README.md) for details and limitations.
+## Before selling for real
 
-## Shopify integration
-
-The `shopify-theme/` directory contains theme files, not a complete downloadable production theme. Merge these into a compatible Shopify Online Store 2.0 theme, retaining that theme's existing configuration, snippets, locales, and other templates. Start with [shopify-theme/README.md](shopify-theme/README.md).
-
-## Before launch
-
-The standalone cart and newsletter are demo-only. Product photos are placeholders. Shopify checkout, payments, shipping, tax, inventory, customer accounts, email subscriptions, analytics, privacy consent, and domain must be configured and tested before selling. The procedural Three.js sneaker is an interactive stylized model; use a licensed optimized GLB/GLTF asset if you want a photorealistic viewer.
-
-## Repository map
-
-```
-demo/
-  index.html
-  styles.css
-  app.js
-  README.md
-shopify-theme/
-  layout/theme.liquid
-  templates/index.json
-  sections/main-sneaker-store.liquid
-  assets/sneaker-store.css
-  assets/sneaker-store.js
-  README.md
-```
+This is a prototype. The hero shoe is procedural 3D geometry, product photography is illustrative, and cart/newsletter/checkout actions are demos. Connect real product inventory, shipping and return policies, customer communications, and Shopify checkout/payment processing before launch.
