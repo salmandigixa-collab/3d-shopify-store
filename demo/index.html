@@ -13,7 +13,14 @@
   <script type="importmap">
     {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}
   </script>
-  <script type="module" src="./app.js"></script>
+  <script type="module">
+    import('./app.js').catch((error) => {
+      console.error('STRIDES storefront failed to start:', error);
+      const loading = document.querySelector('#canvas-loading');
+      if (loading) loading.textContent = '3D PREVIEW COULD NOT LOAD — CHECK YOUR INTERNET CONNECTION AND REFRESH';
+      document.documentElement.classList.add('js-load-error');
+    });
+  </script>
 </head>
 <body>
   <div class="announcement"><span>PAKISTAN-WIDE DELIVERY</span><span>7-DAY EASY EXCHANGE</span><span>BUILT TO MOVE ↗</span></div>
