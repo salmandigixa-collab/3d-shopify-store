@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f3ed">
+  <meta name="description" content="STRIDES Shoes — performance footwear engineered for movement. Explore the interactive 3D sneaker and new-season collection.">
+  <title>STRIDES Shoes — Engineered for Movement</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="importmap">
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}
+  </script>
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <div class="announcement"><span>COMPLIMENTARY SHIPPING ON ORDERS OVER $100</span><span>BUILT TO MOVE ↗</span></div>
+  <header class="header">
+    <a class="logo" href="#" aria-label="STRIDES Shoes home">STRIDES<span>®</span><small>SHOES</small></a>
+    <nav class="nav" id="main-nav" aria-label="Main navigation"><a href="#shop">NEW DROP</a><a href="#categories">MEN</a><a href="#categories">WOMEN</a><a href="#shop">SALE</a></nav>
+    <div class="header-right"><a class="search-link" href="#shop">EXPLORE</a><button class="cart-trigger" id="cart-open" aria-label="Open shopping bag">BAG <span id="cart-count">0</span></button><button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button></div>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="hero-copy reveal">
+        <p class="eyebrow"><span class="dot"></span> THE NEXT STEP / 2026</p>
+        <h1>ENGINEERED<br>FOR <em>MOVEMENT.</em></h1>
+        <p class="hero-description">Light on your feet. Loud in every direction. Meet the next generation of everyday performance.</p>
+        <div class="hero-actions"><a class="button button-dark" href="#shop">SHOP THE COLLECTION <span>↗</span></a><a class="under-link" href="#technology">EXPLORE TECHNOLOGY ↗</a></div>
+        <div class="hero-meta"><span>01 / 04</span><span>DESIGNED FOR EVERYDAY DISTANCE</span></div>
+      </div>
+      <div class="hero-stage">
+        <div class="stage-glow"></div><div class="stage-orbit orbit-a"></div><div class="stage-orbit orbit-b"></div>
+        <div class="canvas-wrap" id="shoe-viewer" aria-label="Interactive 3D sneaker. Drag to rotate and use the mouse wheel to zoom."><div class="canvas-loading" id="canvas-loading">BUILDING YOUR NEXT STEP…</div></div>
+        <div class="stage-label label-top">STRIDES / S-01 <span>INTERACTIVE 3D</span></div>
+        <div class="stage-label label-bottom"><span>ENERGY RETURN</span><strong>+24%</strong></div>
+        <div class="viewer-controls"><span>DRAG TO ROTATE</span><span>SCROLL TO ZOOM</span><button id="reset-view" type="button">RESET ↺</button></div>
+      </div>
+      <div class="hero-foot"><span>RUN YOUR OWN ROUTE</span><span>↓ SCROLL TO EXPLORE</span><span>DESIGNED IN MOTION</span></div>
+    </section>
+    <section class="categories" id="categories" aria-label="Shop by category">
+      <a href="#shop" class="category cat-run"><span class="cat-num">01 / CATEGORY</span><b>RUNNING</b><span class="cat-sub">Go further, feel less.</span><span class="cat-arrow">↗</span><div class="cat-shape shape-run"></div></a>
+      <a href="#shop" class="category cat-life"><span class="cat-num">02 / CATEGORY</span><b>LIFESTYLE</b><span class="cat-sub">Everyday, elevated.</span><span class="cat-arrow">↗</span><div class="cat-shape shape-life"></div></a>
+      <a href="#shop" class="category cat-perf"><span class="cat-num">03 / CATEGORY</span><b>PERFORMANCE</b><span class="cat-sub">Made to push limits.</span><span class="cat-arrow">↗</span><div class="cat-shape shape-perf"></div></a>
+    </section>
+    <section class="shop-section" id="shop">
+      <div class="section-head reveal"><div><p class="eyebrow">THE ROTATION / 2026</p><h2>Find your <em>stride.</em></h2></div><div class="filters" role="group" aria-label="Filter products"><button class="filter active" data-filter="all">ALL</button><button class="filter" data-filter="running">RUNNING</button><button class="filter" data-filter="lifestyle">LIFESTYLE</button><button class="filter" data-filter="performance">PERFORMANCE</button></div></div>
+      <div class="product-grid" id="product-grid">
+        <article class="product-card reveal" data-category="running"><a href="#shop" class="product-visual product-red"><span class="product-badge">BESTSELLER</span><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=85" alt="Red running sneaker" loading="lazy"><span class="product-quick">VIEW DETAILS ↗</span></a><div class="product-meta"><div><h3>Velocity One</h3><p>Road running / Responsive foam</p></div><strong>$128</strong></div><div class="product-bottom"><div class="swatches"><button class="swatch red selected" aria-label="Red colour" title="Red"></button><button class="swatch white" aria-label="White colour" title="White"></button><button class="swatch black" aria-label="Black colour" title="Black"></button></div><button class="add-button" data-product="Velocity One" data-price="128">QUICK ADD <span>+</span></button></div></article>
+        <article class="product-card reveal" data-category="lifestyle"><a href="#shop" class="product-visual product-cream"><span class="product-badge">NEW SEASON</span><img src="https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=900&q=85" alt="White and neutral lifestyle sneaker" loading="lazy"><span class="product-quick">VIEW DETAILS ↗</span></a><div class="product-meta"><div><h3>Cloud Form</h3><p>Everyday / Soft-touch comfort</p></div><strong>$112</strong></div><div class="product-bottom"><div class="swatches"><button class="swatch white selected" aria-label="White colour" title="White"></button><button class="swatch black" aria-label="Black colour" title="Black"></button><button class="swatch lime" aria-label="Lime colour" title="Lime"></button></div><button class="add-button" data-product="Cloud Form" data-price="112">QUICK ADD <span>+</span></button></div></article>
+        <article class="product-card reveal" data-category="performance"><a href="#shop" class="product-visual product-black"><span class="product-badge">LIGHTWEIGHT</span><img src="https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?auto=format&fit=crop&w=900&q=85" alt="Dark performance sneaker" loading="lazy"><span class="product-quick">VIEW DETAILS ↗</span></a><div class="product-meta"><div><h3>Pulse Runner</h3><p>Training / Stable support</p></div><strong>$136</strong></div><div class="product-bottom"><div class="swatches"><button class="swatch black selected" aria-label="Black colour" title="Black"></button><button class="swatch white" aria-label="White colour" title="White"></button><button class="swatch lime" aria-label="Lime colour" title="Lime"></button></div><button class="add-button" data-product="Pulse Runner" data-price="136">QUICK ADD <span>+</span></button></div></article>
+        <article class="product-card reveal" data-category="lifestyle"><a href="#shop" class="product-visual product-green"><span class="product-badge">LIMITED COLOUR</span><img src="https://images.unsplash.com/photo-1460353581641-37baddab0fa2?auto=format&fit=crop&w=900&q=85" alt="Contemporary everyday sneaker" loading="lazy"><span class="product-quick">VIEW DETAILS ↗</span></a><div class="product-meta"><div><h3>Street Form 02</h3><p>Street / All-day wear</p></div><strong>$104</strong></div><div class="product-bottom"><div class="swatches"><button class="swatch lime selected" aria-label="Lime colour" title="Lime"></button><button class="swatch white" aria-label="White colour" title="White"></button><button class="swatch black" aria-label="Black colour" title="Black"></button></div><button class="add-button" data-product="Street Form 02" data-price="104">QUICK ADD <span>+</span></button></div></article>
+      </div>
+      <p class="demo-note">DEMO STORE · Sample products and prices. Connect Shopify to sell live inventory.</p>
+    </section>
+    <section class="tech-section" id="technology"><div class="tech-visual"><div class="tech-ring"></div><img src="https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=1100&q=90" alt="Close-up of modern sneaker materials" loading="lazy"></div><div class="tech-copy reveal"><p class="eyebrow">THE SCIENCE OF STRIDE</p><h2>More than a shoe.<br><em>A feeling.</em></h2><p>Responsive cushioning, considered materials, and a silhouette built around the way you move. Every detail has a reason.</p><div class="tech-points"><div><span>01</span><strong>ENERGY FOAM</strong><small>Responsive comfort with every step.</small></div><div><span>02</span><strong>BREATHABLE KNIT</strong><small>Lightweight support that moves with you.</small></div><div><span>03</span><strong>GRIP OUTSOLE</strong><small>Confident traction from street to studio.</small></div></div><a class="button button-lime" href="#shop">MEET YOUR NEXT PAIR ↗</a></div></section>
+    <section class="newsletter"><p class="eyebrow">GET IN THE LOOP</p><h2>First access. <em>Fresh drops.</em></h2><p>New releases, limited colourways, and stories made for movement.</p><form class="newsletter-form" id="newsletter-form"><label class="sr-only" for="email">Email address</label><input id="email" type="email" placeholder="Your email address" required><button type="submit">JOIN US ↗</button><span id="newsletter-message" role="status"></span></form><small>Demo form only — connect an email marketing provider before launch.</small></section>
+  </main>
+  <footer class="footer"><a class="logo" href="#">STRIDES<span>®</span><small>SHOES</small></a><p>MADE FOR WHERE YOU'RE GOING.</p><div><a href="#technology">OUR APPROACH</a><a href="#shop">SHOP</a><a href="mailto:hello@example.com">CONTACT</a></div><small>© <span id="year"></span> STRIDES SHOES. KEEP MOVING.</small></footer>
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+  <aside class="cart-drawer" id="cart-drawer" aria-label="Shopping bag" aria-hidden="true"><div class="drawer-head"><h2>Your bag <span id="drawer-count">(0)</span></h2><button id="cart-close" aria-label="Close shopping bag">✕</button></div><div class="cart-items" id="cart-items"><p class="empty-cart">Your next favourite pair is waiting.</p></div><div class="drawer-foot"><div><span>SUBTOTAL</span><strong id="cart-subtotal">$0</strong></div><p>Shipping and taxes calculated at checkout.</p><button id="demo-checkout" class="checkout-button">CONTINUE TO CHECKOUT ↗</button><small>Demo checkout is not connected to payment processing.</small></div></aside>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
