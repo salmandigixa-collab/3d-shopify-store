@@ -1,26 +1,50 @@
 export const mockProducts = [
   {
     id: 1,
-    name: 'Aster Lamp',
-    price: '$249',
-    category: 'Lighting',
+    name: 'Air Genesis',
+    price: '$189',
+    category: 'Running',
     accent: '#7cf3d0',
-    description: 'Ambient sculptural lighting with a tactile matte finish.'
+    description: 'Lightweight mesh sneaker with gel cushioning for all-day comfort.'
   },
   {
     id: 2,
-    name: 'Orbit Speaker',
-    price: '$399',
-    category: 'Audio',
+    name: 'Urban Pulse',
+    price: '$249',
+    category: 'Lifestyle',
     accent: '#ff8b5e',
-    description: 'Premium wireless sound wrapped in a soft geometric shell.'
+    description: 'Premium leather and suede blend with a retro-modern silhouette.'
   },
   {
     id: 3,
-    name: 'Eon Chair',
-    price: '$520',
-    category: 'Furniture',
+    name: 'Velocity Pro',
+    price: '$279',
+    category: 'Basketball',
+    accent: '#7cf3d0',
+    description: 'High-ankle support sneaker engineered for court performance.'
+  },
+  {
+    id: 4,
+    name: 'Street Classic',
+    price: '$159',
+    category: 'Casual',
     accent: '#dfe7f2',
-    description: 'A minimalist lounge chair engineered for modern interiors.'
+    description: 'Timeless design in premium canvas and rubber construction.'
+  },
+  {
+    id: 5,
+    name: 'Trail Breaker',
+    price: '$219',
+    category: 'Trail',
+    accent: '#ff8b5e',
+    description: 'All-terrain grip with waterproof membrane and ankle stability.'
+  },
+  {
+    id: 6,
+    name: 'Sky Walker',
+    price: '$299',
+    category: 'Premium',
+    accent: '#dfe7f2',
+    description: 'Limited edition colorway with carbon fiber reinforcement.'
   }
 ];
