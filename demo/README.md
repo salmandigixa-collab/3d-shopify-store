@@ -1,6 +1,6 @@
 # STRIDES Shoes Pakistan — Premium 3D Storefront
 
-A responsive sneaker storefront concept with a procedural Three.js 3D hero shoe, richer motion design, product search and category filters, eight sneaker product cards, colour swatches, favourites, and a demo shopping bag. Prices are displayed in Pakistani rupees (PKR).
+A responsive sneaker storefront concept with a procedural Three.js 3D hero shoe, richer motion design, product search and category filters, twelve sneaker product cards and branded product-image marks, colour swatches, favourites, and a demo shopping bag. Prices are displayed in Pakistani rupees (PKR).
 
 ## Run the standalone preview on Windows
 
@@ -20,8 +20,9 @@ You need an internet connection for the Three.js CDN, Google Fonts, and remote p
 ## What is included
 
 - Dark navigation, lime accents, editorial hero layout, animated orbit graphics, floating product details, and a drag-to-rotate 3D sneaker.
-- 8 sample products across running, lifestyle, training, and basketball categories, with PKR prices.
-- Search, category filters, product colour selectors, favourites, add-to-bag interactions, subtotal calculation, and responsive mobile layout.
+- 12 sample products across running, lifestyle, training, basketball, and casual categories, with PKR prices.
+- Search, category filters, price/name sorting, product quick-view with EU size selection, colour previews, favourites, add-to-bag interactions, subtotal calculation, and responsive mobile layout.
+- Consistent STRIDES logo and brand mark across header, footer, and product cards. Missing product photos display a branded fallback.
 - Scroll reveals, hover transitions, subtle idle animation, and reduced-motion support.
 
 ## Important prototype notes
